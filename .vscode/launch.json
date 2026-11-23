@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: Playwright UI Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "tests/ui",
+                "-v",
+                "-s"
+            ],
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

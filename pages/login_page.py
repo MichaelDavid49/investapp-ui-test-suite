@@ -1,8 +1,10 @@
+from pages.base_page import BasePage
 
-class LoginPage:
 
-    def __init__(self, page):
-        self.page = page
+class LoginPage(BasePage):
+
+    def __init__(self, page, base_url=""):
+        super().__init__(page, base_url)
 
         # Botões para abrir o modal
         self.botao_entrar_sistema = page.get_by_test_id("btn-open-login")
@@ -17,7 +19,7 @@ class LoginPage:
         self.botao_cancelar = page.get_by_role("button", name="Cancelar")
         self.botao_fechar = page.locator(".btn-close-modal")
 
-        # Mensagem de erro de autenticação
+        # Mensagem de erro
         self.mensagem_erro = page.get_by_text(
             "Usuário ou senha incorretos",
             exact=True

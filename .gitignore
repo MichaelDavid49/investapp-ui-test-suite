@@ -18,3 +18,5 @@ report.html
 # Configurações locais do VS Code
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json

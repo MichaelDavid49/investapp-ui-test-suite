@@ -93,5 +93,3 @@ def test_login_com_credenciais_invalidas(page):
     assert mensagem_erro.is_visible()
     assert login_page.campo_usuario.is_visible()
     assert login_page.campo_senha.is_visible()
-    
-    
