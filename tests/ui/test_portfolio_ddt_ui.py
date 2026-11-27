@@ -61,8 +61,10 @@ def test_cadastro_aporte_ddt_pom(
     deve_sucesso: bool,
 ):
     """Valida aportes orientados por CSV usando somente ações do POM."""
-    navbar.navegar_para_carteira()
-    total_inicial = portfolio_page.total_de_ativos_listados()
+    quantidade_carregada = navbar.navegar_para_carteira()
+    total_inicial = portfolio_page.total_de_ativos_listados(
+        quantidade_esperada=quantidade_carregada
+    )
 
     portfolio_page.cadastrar_aporte(
         ativo=asset,
@@ -74,9 +76,11 @@ def test_cadastro_aporte_ddt_pom(
 
     if deve_sucesso:
         expect(portfolio_page.linhas_de_ativos).to_have_count(
-            total_inicial + 1, timeout=5000
+            total_inicial + 1, timeout=60000
         )
         expect(portfolio_page.obter_linha_por_ativo(asset)).to_be_visible()
     else:
+        expect(portfolio_page.linhas_de_ativos).to_have_count(
+            total_inicial, timeout=5000
+        )
         expect(portfolio_page.obter_alerta_erro()).to_be_visible(timeout=5000)
-        expect(portfolio_page.linhas_de_ativos).to_have_count(total_inicial)

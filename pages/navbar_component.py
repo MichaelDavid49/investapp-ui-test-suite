@@ -21,8 +21,33 @@ class NavbarComponent:
         self.botao_portfolio.click()
 
     def navegar_para_carteira(self):
-        """Alias semântico usado pelos testes de carteira."""
-        self.acessar_portfolio()
+        """Abre a carteira e aguarda a carga inicial dos investimentos."""
+        with self.page.expect_response(
+            lambda resposta: (
+                "/api/investments" in resposta.url
+                and resposta.request.method == "GET"
+            ),
+            timeout=20000,
+        ) as resposta_info:
+            self.acessar_portfolio()
+
+        resposta = resposta_info.value
+        if resposta.status != 200:
+            raise AssertionError(
+                f"Falha ao carregar a carteira: HTTP {resposta.status}"
+            )
+
+        # Aguarda a SPA aplicar os dados da resposta à tabela antes das asserções.
+        self.page.wait_for_load_state("networkidle")
+        self.page.get_by_test_id("table-portfolio").wait_for(
+            state="visible"
+        )
+        investimentos = resposta.json()
+        if not isinstance(investimentos, list):
+            raise AssertionError(
+                "A resposta da carteira não contém uma lista de investimentos."
+            )
+        return len(investimentos)
 
     def acessar_simulador_rentabilidade(self):
         self.botao_simulador_rentabilidade.click()

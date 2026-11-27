@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 
 
 class PortfolioPage:
@@ -41,7 +41,14 @@ class PortfolioPage:
         self.input_preco_compra.fill(preco)
         self.input_dias_investidos.fill(dias_inv)
         self.input_dias_planejados.fill(dias_plan)
-        self.botao_adicionar.click()
+        with self.page.expect_response(
+            lambda resposta: (
+                "/api/investments" in resposta.url
+                and resposta.request.method == "POST"
+            ),
+            timeout=60000,
+        ):
+            self.botao_adicionar.click()
 
     def obter_linha_por_ativo(self, nome_ativo: str):
         """Retorna a última linha da tabela que corresponde ao ativo."""
@@ -51,7 +58,12 @@ class PortfolioPage:
         """Expõe o alerta da carteira para asserções do teste."""
         return self.alerta_erro
 
-    def total_de_ativos_listados(self) -> int:
+    def total_de_ativos_listados(self, quantidade_esperada=None) -> int:
         """Conta registros reais, ignorando a mensagem de carteira vazia."""
         self.tabela_carteira.wait_for(state="visible")
+        if quantidade_esperada is not None:
+            # Aguarda a SPA renderizar a mesma quantidade retornada no GET.
+            expect(self.linhas_de_ativos).to_have_count(
+                quantidade_esperada, timeout=20000
+            )
         return self.linhas_de_ativos.count()
