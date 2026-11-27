@@ -6,6 +6,7 @@ from playwright.sync_api import Page, expect
 
 from pages.login_page import LoginPage
 from pages.navbar_component import NavbarComponent
+from pages.portfolio_page import PortfolioPage
 
 
 @pytest.fixture(scope="session")
@@ -76,3 +77,9 @@ def logged_page(
 def navbar(page: Page):
     """Disponibiliza o componente de navegação para os testes."""
     return NavbarComponent(page)
+
+
+@pytest.fixture
+def portfolio_page(page: Page):
+    """Disponibiliza o Page Object da carteira para os testes de UI."""
+    return PortfolioPage(page)

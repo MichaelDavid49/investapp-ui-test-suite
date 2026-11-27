@@ -20,6 +20,10 @@ class NavbarComponent:
     def acessar_portfolio(self):
         self.botao_portfolio.click()
 
+    def navegar_para_carteira(self):
+        """Alias semântico usado pelos testes de carteira."""
+        self.acessar_portfolio()
+
     def acessar_simulador_rentabilidade(self):
         self.botao_simulador_rentabilidade.click()
 
